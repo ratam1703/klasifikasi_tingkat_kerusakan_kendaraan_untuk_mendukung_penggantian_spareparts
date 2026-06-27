@@ -158,7 +158,8 @@ def load_and_optimize_ai_model():
     scaler = MinMaxScaler()
     X_scaled = scaler.fit_transform(X)
     
-    def fitness_function(k_val):
+    # PERBAIKAN: Nama fungsi diubah menjadi fungsi_fitness agar sinkron
+    def fungsi_fitness(k_val):
         k_int = int(np.round(k_val))
         if k_int < 1: k_int = 1
         knn = KNeighborsClassifier(n_neighbors=k_int)
@@ -174,7 +175,7 @@ def load_and_optimize_ai_model():
     particles_X = np.random.uniform(min_k, max_k, num_particles)
     particles_V = np.random.uniform(-1, 1, num_particles)
     pbest_X = np.copy(particles_X)
-    pbest_fitness = np.array([fitness_function(x) for x in pbest_X])
+    pbest_fitness = np.array([fungsi_fitness(x) for x in pbest_X])
 
     gbest_X = pbest_X[np.argmax(pbest_fitness)]
     gbest_fitness = pbest_fitness[np.argmax(pbest_fitness)]
@@ -291,7 +292,7 @@ else:
                     <div class="result-card result-sedang">
                         <div style="font-size: 0.8rem; font-weight: 700; color: #f59e0b; uppercase; tracking-wider;">Hasil Klasifikasi AI:</div>
                         <div style="font-size: 2.2rem; font-weight: 900; color: #f59e0b; margin-bottom: 0.5rem;">{label_kerusakan.upper()}</div>
-                        <div style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color:#f8fafc;">STATUS: JADWALKAN MAINTENANCE SAKLAR.</div>
+                        <div style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color:#f8fafc;">STATUS: JADWALKAN MAINTENANCE BERKALA.</div>
                         <p style="font-size: 0.85rem; color: #cbd5e1; margin: 0; line-height: 1.6;">
                             Komponen memasuki fase kritis dan mendekati batas ketahanan maksimal material. Disarankan untuk menjadwalkan proses penggantian suku cadang dalam waktu dekat sebelum memicu kerusakan fatal berkelanjutan.
                         </p>
