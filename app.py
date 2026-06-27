@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. INJEKSI CUSTOM CSS HIGH-FIDELITY DESIGN
+# 2. INJEKSI CUSTOM CSS HIGH-FIDELITY & ANIMASI COLUMN
 # ==========================================
 st.markdown("""
     <style>
@@ -62,9 +62,9 @@ st.markdown("""
         margin: 0 auto;
     }
     
-    /* CARD GLASSMORPHISM UNTUK INPUT DAN KONTEN */
+    /* CARD GLASSMORPHISM UTAMA */
     .dashboard-card {
-        background: rgba(22, 22, 43, 0.6);
+        background: rgba(22, 22, 43, 0.4);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.05);
@@ -84,6 +84,55 @@ st.markdown("""
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         padding-bottom: 0.75rem;
     }
+
+    /* =========================================================
+       PENYESUAIAN WARNA & ANIMASI TIAP KOLOM INPUT (KONTROL BARU)
+       ========================================================= */
+    
+    /* 1. Memperjelas Teks Label Kolom (Agar Terbaca Jelas) */
+    div[data-testid="stWidgetLabel"] p {
+        color: #cbd5e1 !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        letter-spacing: 0.02em;
+    }
+
+    /* 2. Mengubah Kotak Putih Input Menjadi Gelap & Transparan (Glass Look) */
+    div[data-baseweb="input"], div[data-baseweb="select"] {
+        background-color: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    /* 3. Menyesuaikan Warna Teks di Dalam Kolom */
+    div[data-baseweb="input"] input, div[data-baseweb="select"] div {
+        color: #ffffff !important;
+        font-weight: 500 !important;
+    }
+
+    /* 4. Efek Animasi & Glow Saat Kolom Diklik/Difokuskan */
+    div[data-baseweb="input"]:focus-within, div[data-baseweb="select"]:focus-within {
+        border-color: #38bdf8 !important;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.35) !important;
+    }
+
+    /* 5. Efek Animasi Hover (Mengangkat Kolom Secara Lembut Saat Kursor Lewat) */
+    div[data-testid="stNumberInput"], div[data-testid="stSelectbox"] {
+        transition: transform 0.3s ease !important;
+    }
+    div[data-testid="stNumberInput"]:hover, div[data-testid="stSelectbox"]:hover {
+        transform: translateY(-3px);
+    }
+
+    /* 6. Animasi Fade-In Lembut Saat Form Pertama Kali Dimuat */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    form {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
     
     /* CUSTOM KARTU METRIK DI SIDEBAR */
     .metric-box {
@@ -97,7 +146,7 @@ st.markdown("""
     .metric-label { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; tracking-wider; font-weight: 600; }
     .metric-value { font-size: 1.8rem; font-weight: 800; color: #38bdf8; margin-top: 0.25rem; }
     
-    /* KUSTOMISASI TOMBOL UTAMA (GLOW EFFECT) */
+    /* KUSTOMISASI TOMBOL UTAMA (PERBAIKAN WARNA TEKS AGAR KONTRAS) */
     .stButton>button {
         background: linear-gradient(90deg, #0284c7 0%, #4f46e5 100%) !important;
         color: #ffffff !important;
@@ -109,14 +158,13 @@ st.markdown("""
         width: 100% !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         box-shadow: 0 4px 20px rgba(2, 132, 199, 0.25) !important;
-        margin-top: 1rem;
+        margin-top: 1.5rem;
     }
     .stButton>button:hover {
         transform: translateY(-2px) !important;
         box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45) !important;
         color: #ffffff !important;
     }
-    .stButton>button:active { transform: translateY(0px) !important; }
     
     /* KARTU OUTPUT HASIL DIAGNOSIS ELEGAN */
     .result-card {
@@ -158,7 +206,6 @@ def load_and_optimize_ai_model():
     scaler = MinMaxScaler()
     X_scaled = scaler.fit_transform(X)
     
-    # PERBAIKAN: Nama fungsi diubah menjadi fungsi_fitness agar sinkron
     def fungsi_fitness(k_val):
         k_int = int(np.round(k_val))
         if k_int < 1: k_int = 1
@@ -240,7 +287,6 @@ else:
     col_form, col_output = st.columns([11, 9], gap="large")
 
     with col_form:
-        # Pembungkus Form HTML melalui selector CSS dashboard-card
         st.markdown('<div class="dashboard-card">', unsafe_allow_html=True)
         st.markdown('<div class="card-header"><span>📥</span> Formulir Karakteristik Data Kendaraan</div>', unsafe_allow_html=True)
         
@@ -257,7 +303,7 @@ else:
                 input_umur = st.number_input("Masa Pakai / Usia Kronologis (Tahun)", min_value=0, value=3, step=1)
                 input_service = st.selectbox("Rencana Tindakan Operasional", opsi_service)
             
-            st.markdown('</div>', unsafe_allow_html=True) # Penutup div dashboard-card sebelum tombol form
+            st.markdown('</div>', unsafe_allow_html=True) # Penutup div dashboard-card
             submit_btn = st.form_submit_button("⚡ Jalankan Komputasi Prediksi")
 
     with col_output:
@@ -265,7 +311,6 @@ else:
         st.markdown('<div class="card-header"><span>📊</span> Panel Hasil Keputusan Akhir</div>', unsafe_allow_html=True)
         
         if submit_btn:
-            # Jalankan Proses Prediksi Skala Jarak
             encoded_kendaraan = le_kendaraan.transform([input_kendaraan])[0]
             encoded_service = le_service.transform([input_service])[0]
             
@@ -275,7 +320,6 @@ else:
             pred_idx = model.predict(scaled_features)[0]
             label_kerusakan = le_target.classes_[pred_idx]
             
-            # Tampilan Kondisi Logis dengan Desain Elegan Tanpa Komponen Standar
             if label_kerusakan == 'Berat':
                 st.markdown(f"""
                     <div class="result-card result-berat">
@@ -310,7 +354,6 @@ else:
                     </div>
                 """, unsafe_allow_html=True)
         else:
-            # Tampilan Kosong Default Sebelum Klik yang Minimalis
             st.markdown("""
                 <div style="text-align: center; padding: 3.5rem 1rem; color: #64748b;">
                     <div style="font-size: 3.5rem; margin-bottom: 1rem; animation: pulse 2s infinite;">🔮</div>
